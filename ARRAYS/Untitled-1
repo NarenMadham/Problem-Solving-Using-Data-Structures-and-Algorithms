@@ -1,0 +1,64 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+long long int max(long long int a, long long int b){
+    if(a > b){
+        return a;
+    }else{
+        return b;
+    }
+}
+
+bool isVowel(char s){
+    if(s == 'a' ||s == 'e' ||s == 'i' ||s == 'o' ||s == 'u'){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+int main(){
+    int t;
+    cin>>t;
+    while(t--){
+        char a[10000000] = {'\0'};
+        scanf("%s", a);
+        long long int n = strlen(a);
+        long long int dp[n];
+        dp[0] = 1;
+        bool allVowels = true;
+        if(isVowel(a[0]) && isVowel(a[1]) || (a[0] == a[1])){
+            dp[1] = 1;
+        }else{
+            dp[1] = 2;
+        }
+        long long int mul = 3;
+        for(int i = 2;i<n;i++){
+            if(a[i] == a[i-1]){
+                if(!isVowel(a[i])){
+                    allVowels = false;
+                }
+                dp[i] = dp[i-1];
+                continue;
+            }
+            else if(isVowel(a[i-1]) && isVowel(a[i])){
+                dp[i] = dp[i-2];
+                mul = 1;
+            }else if(isVowel(a[i-2]) && isVowel(a[i])){
+                allVowels = false;
+                dp[i] = dp[i-1];
+                mul = 1;
+            }
+            else{
+                allVowels = false;
+                dp[i] = (max(dp[i-2], dp[i-1]) * mul) % 1000000007;
+                mul += 1;
+            }
+        }
+        if(allVowels == true){
+            cout<<-1<<endl;
+        }else{
+            cout<<dp[n-1]<<endl;
+        }
+    }
+}
